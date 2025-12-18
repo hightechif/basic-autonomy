@@ -50,7 +50,7 @@ class VacuumCleaner:
             else:
                 print(" -> Charging...")
 
-def run_simulation(steps=15):
+def run_demo(steps=15):
     bot = VacuumCleaner()
     
     # Simulating a scenario
@@ -92,4 +92,4 @@ def run_simulation(steps=15):
         time.sleep(0.5)
 
 if __name__ == "__main__":
-    run_simulation()
+    run_demo()
