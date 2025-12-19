@@ -1,6 +1,6 @@
 
 class HistogramFilter:
-    def __init__(self, world, pHit=0.6, pMiss=0.2, pExact=0.8, pOvershoot=0.1, pUndershoot=0.1):
+    def __init__(self, world: list[str], pHit: float = 0.6, pMiss: float = 0.2, pExact: float = 0.8, pOvershoot: float = 0.1, pUndershoot: float = 0.1):
         """
         Initializes the Histogram Filter (1D Grid Localization).
         
@@ -18,9 +18,9 @@ class HistogramFilter:
         self.pExact = pExact
         self.pOvershoot = pOvershoot
         self.pUndershoot = pUndershoot
-        self.p = [1.0 / len(world)] * len(world) # Uniform initial distribution
+        self.p: list[float] = [1.0 / len(world)] * len(world) # Uniform initial distribution
 
-    def sense(self, measurement):
+    def sense(self, measurement: str) -> list[float]:
         """
         Updates belief based on measurement Z (Bayes Rule).
         """
@@ -35,7 +35,7 @@ class HistogramFilter:
         self.p = [val / s for val in q]
         return self.p
 
-    def move(self, u):
+    def move(self, u: int) -> list[float]:
         """
         Updates belief based on motion u (Total Probability).
         """
@@ -51,10 +51,10 @@ class HistogramFilter:
         self.p = q
         return self.p
 
-    def get_distribution(self):
+    def get_distribution(self) -> list[float]:
         return self.p
 
-    def get_most_likely_position(self):
+    def get_most_likely_position(self) -> tuple[list[int], float]:
         max_p = max(self.p)
         indices = [i for i, x in enumerate(self.p) if x == max_p]
         return indices, max_p

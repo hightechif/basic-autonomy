@@ -8,12 +8,12 @@ class VacuumState(Enum):
     STUCK = auto()
 
 class VacuumCleaner:
-    def __init__(self):
+    def __init__(self) -> None:
         self.state = VacuumState.CLEAN
         self.battery = 100
         self.steps_stuck = 0
 
-    def step(self, sensors):
+    def step(self, sensors: dict[str, int | bool]) -> None:
         """
          transitions based on sensor data:
          - sensors['battery_level']: int (0-100)
@@ -29,7 +29,7 @@ class VacuumCleaner:
                 print(" -> Bumper hit! Switching to STUCK.")
                 self.state = VacuumState.STUCK
                 self.steps_stuck = 0
-            elif battery < 20:
+            elif isinstance(battery, int) and battery < 20:
                 print(" -> Low battery! Switching to CHARGE.")
                 self.state = VacuumState.CHARGE
             else:
@@ -44,13 +44,13 @@ class VacuumCleaner:
                 print(" -> Still stuck, trying to maneuver...")
 
         elif self.state == VacuumState.CHARGE:
-            if battery >= 90:
+            if isinstance(battery, int) and battery >= 90:
                 print(" -> Fully charged! Switching back to CLEAN.")
                 self.state = VacuumState.CLEAN
             else:
                 print(" -> Charging...")
 
-def run_demo(steps=15):
+def run_demo(steps: int = 15) -> None:
     bot = VacuumCleaner()
     
     # Simulating a scenario

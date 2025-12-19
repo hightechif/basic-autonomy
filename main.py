@@ -2,41 +2,58 @@
 import argparse
 import sys
 import importlib
+from enum import Enum
+from abc import abstractmethod
 
-def main():
+class Process(Enum):
+    NAV = ("nav", "\n--- Running Navigation (Probabilistic State Estimation) Demo ---", "01_probabilistic_state_estimation.grid_world_probability")
+    FSM = ("fsm", "\n--- Running Decision Making (Finite State Machine) Demo ---", "02_finite_state_machine.vacuum_agent")
+    PLAN = ("plan", "\n--- Running Guidance (Path Planning) Demo ---", "03_graph_search_n_path_planning.astar_grid")
+    CONTROL = ("control", "\n--- Running Control (PID) Demo ---", "04_control.pid_controller")
+
+    # Type hints for attributes added by __new__
+    title: str
+    path: str
+
+    def __new__(cls, value: str, title: str, path: str) -> 'Process':
+        obj = object.__new__(cls)
+        obj._value_ = value
+        obj.title = title
+        obj.path = path
+        return obj
+
+    def __init__(self, value: str, title: str, path: str) -> None:
+        pass
+
+
+def call_module(args: argparse.Namespace, process: Process) -> None:
+    print(process.title)
+    try:
+        module = importlib.import_module(f"{process.path}")
+        if hasattr(module, 'run_demo'):
+                module.run_demo()
+        else:
+            print("Error: The module does not have a run_demo() function yet.")
+    except ImportError as e:
+        print(f"Error importing {module} module: {e}")
+        return
+
+def main() -> None:
     parser = argparse.ArgumentParser(description="Basic Autonomy Robotics Demos")
-    parser.add_argument("--module", "-m", type=str, choices=["nav", "fsm", "plan", "control"], required=True,
+    parser.add_argument("--module", "-m", type=str, choices=[process.value for process in Process], required=True,
                         help="Which module demo to run: 'nav' (Navigation), 'fsm' (Decision), 'plan' (Guidance), 'control' (Control)")
     
     args = parser.parse_args()
-    
 
-    if args.module == "nav":
-        print("\n--- Running Navigation (Probabilistic State Estimation) Demo ---")
-        module = importlib.import_module("01_probabilistic_state_estimation.grid_world_probability")
-        module.run_demo()
-        
-    elif args.module == "fsm":
-        print("\n--- Running Decision Making (Finite State Machine) Demo ---")
-        try:
-             module = importlib.import_module("02_finite_state_machine.vacuum_agent")
-             if hasattr(module, 'run_demo'):
-                 module.run_demo()
-             else:
-                 print("Error: The FSM module does not have a run_demo() function yet.")
-        except ImportError as e:
-             print(f"Error importing FSM module: {e}")
-             return
-        
-    elif args.module == "plan":
-        print("\n--- Running Guidance (Path Planning) Demo ---")
-        module = importlib.import_module("03_graph_search_n_path_planning.astar_grid")
-        module.run_demo()
-        
-    elif args.module == "control":
-        print("\n--- Running Control (PID) Demo ---")
-        module = importlib.import_module("04_control.pid_controller")
-        module.run_demo()
+    match args.module:
+        case Process.NAV.value:
+            call_module(args, Process.NAV)
+        case Process.FSM.value:
+            call_module(args, Process.FSM)
+        case Process.PLAN.value:
+            call_module(args, Process.PLAN)
+        case Process.CONTROL.value:
+            call_module(args, Process.CONTROL)
 
 if __name__ == "__main__":
     main()

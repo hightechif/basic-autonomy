@@ -1,6 +1,6 @@
 
 class PIDController:
-    def __init__(self, kp, ki, kd, setpoint=0.0):
+    def __init__(self, kp: float, ki: float, kd: float, setpoint: float = 0.0):
         """
         Initializes the PID Controller.
         
@@ -18,7 +18,7 @@ class PIDController:
         self.prev_error = 0.0
         self.integral = 0.0
 
-    def update(self, measurement, dt=1.0):
+    def update(self, measurement: float, dt: float = 1.0) -> float:
         """
         Calculates the control output based on the current measurement.
         
@@ -47,7 +47,7 @@ class PIDController:
         
         return p_term + i_term + d_term
 
-def run_demo():
+def run_demo() -> None:
     import time
     
     # Simulation parameters

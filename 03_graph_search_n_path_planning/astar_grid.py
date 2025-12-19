@@ -1,21 +1,23 @@
 import heapq
 
 class Node:
-    def __init__(self, position, parent=None):
+    def __init__(self, position: tuple[int, int], parent: 'Node | None' = None):
         self.position = position
         self.parent = parent
         self.g = 0  # Cost from start
         self.h = 0  # Heuristic to end
         self.f = 0  # Total cost
 
-    def __lt__(self, other):
+    def __lt__(self, other: 'Node') -> bool:
         return self.f < other.f
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Node):
+            return NotImplemented
         return self.position == other.position
 
 class AStarPlanner:
-    def __init__(self, grid):
+    def __init__(self, grid: list[list[int]]):
         """
         grid: 2D list where 0 is empty, 1 is obstacle
         """
@@ -23,11 +25,11 @@ class AStarPlanner:
         self.width = len(grid)
         self.height = len(grid[0])
 
-    def heuristic(self, a, b):
+    def heuristic(self, a: tuple[int, int], b: tuple[int, int]) -> int:
         # Manhattan distance
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    def get_neighbors(self, position):
+    def get_neighbors(self, position: tuple[int, int]) -> list[tuple[int, int]]:
         neighbors = []
         x, y = position
         # 4-way connectivity
@@ -39,19 +41,18 @@ class AStarPlanner:
                 neighbors.append((nx, ny))
         return neighbors
 
-    def plan(self, start, end):
+    def plan(self, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]] | None:
         start_node = Node(start)
         end_node = Node(end)
         
-        open_list = []
-        closed_list = [] # Ideally use a set for closed list for O(1) lookup, but need robust hashing for Node
+        open_list: list[Node] = []
         # Using a dictionary for closed_set is better: key=pos, value=g_cost
-        closed_set = {}
+        closed_set: dict[tuple[int, int], int] = {}
         
         heapq.heappush(open_list, start_node)
         
         # Keep track of best g seen so far
-        g_scores = {start: 0}
+        g_scores: dict[tuple[int, int], int] = {start: 0}
 
         while open_list:
             current_node = heapq.heappop(open_list)
@@ -59,7 +60,7 @@ class AStarPlanner:
             # Found the goal
             if current_node == end_node:
                 path = []
-                current = current_node
+                current: Node | None = current_node
                 while current is not None:
                     path.append(current.position)
                     current = current.parent
@@ -87,7 +88,7 @@ class AStarPlanner:
             
         return None
 
-def print_grid(grid, path=None, start=None, end=None):
+def print_grid(grid: list[list[int]], path: list[tuple[int, int]] | None = None, start: tuple[int, int] | None = None, end: tuple[int, int] | None = None) -> None:
     for x in range(len(grid)):
         line = ""
         for y in range(len(grid[0])):
@@ -104,7 +105,7 @@ def print_grid(grid, path=None, start=None, end=None):
                 line += ". "
         print(line)
 
-def run_demo():
+def run_demo() -> None:
     # 0 = Empty, 1 = Obstacle
     grid = [
         [0, 0, 0, 0, 0, 1],
