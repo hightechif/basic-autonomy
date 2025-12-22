@@ -3,67 +3,72 @@
 This repository contains fundamental implementations of the core components required for basic autonomy. It breaks down the cycle into three distinct projects, each mapping to a critical subsystem of autonomous system architecture: Localization, Decision Making, and Planning.
 
 ```ascii
-                     +-----------------------------+
-                     |        THE REAL WORLD       |
-                     |  (Static + Dynamic Objects) |
-                     +--------------+--------------+
-                                    |
-                                    |  Exteroceptive Data
-                                    |  (LiDAR / Camera / Depth)
-                                    v
-        +================================================================+
-        |                    AUTONOMY LAYER                              |
-        |              (Decision-Making Brain ~5–20 Hz)                  |
-        |                                                                |
-        |  [ Perception ]                                                 |
-        |    - Object Detection                                           |
-        |    - Free Space Estimation                                      |
-        |    - Semantic Understanding                                     |
-        |           |                                                     |
-        |           v                                                     |
-        |  [ State Estimation / SLAM ]  <---- Coupled Estimation ---->    |
-        |    - Localization (Where am I?)                                 |
-        |    - Mapping (What’s around me?)                                |
-        |           |                                                     |
-        |           v                                                     |
-        |  [ Behavior / Decision Making ]                                 |
-        |    - Goal selection                                             |
-        |    - Mode switching (follow, avoid, stop)                       |
-        |           |                                                     |
-        |           v                                                     |
-        |  [ Planning ]                                                   |
-        |    - Global Path (A*, RRT*)                                      |
-        |    - Local Trajectory (MPC, DWA, RL)                             |
-        |                                                                |
-        +============================+===================================+
-                                     |
-                                     |  Intent / Setpoints
-                                     |  (v, ω, trajectory, waypoints)
-                                     v
-        +============================+===================================+
-        |                     ROBOTICS LAYER                              |
-        |                (Physical Execution Body ~100–1000 Hz)           |
-        |                                                                |
-        |  [ Control ]                                                    |
-        |    - PID / LQR / MPC                                            |
-        |    - Low-level stabilization                                   |
-        |           |                                                     |
-        |           v                                                     |
-        |  [ Actuators ]                                                  |
-        |    - Motors / Wheels / Joints                                   |
-        |           |                                                     |
-        |           v                                                     |
-        |  [ Physical Motion ] -----------------------------+-------------+
-        |           |                                      |
-        |           v                                      |
-        |  [ Proprioceptive Sensors ]                      |
-        |    - Encoders                                   |
-        |    - IMU                                        |
-        |           |                                      |
-        |           +------------- Fast Reflex Loop -------+
-        |
-        +================================================================+
 
+                 +-----------------------------+
+                 |        THE REAL WORLD       |
+                 |  (Static + Dynamic Objects) |
+                 +--------------+--------------+
+                                |
+                                |  Exteroceptive Data
+                                |  (LiDAR / Camera / Depth)
+                                v
+    +================================================================+
+    |                    AUTONOMY LAYER                              |
+    |              (Decision-Making Brain ~5–20 Hz)                  |
+    |                                                                |
+    |  [ Perception ]                                                |
+    |    - Object Detection                                          |
+    |    - Free Space Estimation                                     |
+    |    - Semantic Understanding                                    |
+    |           |                                                    |
+    |           v                                                    |
+    |  [ State Estimation / SLAM ]  <---- Coupled Estimation ---->   |
+    |    - Localization (Where am I?)                                |
+    |    - Mapping (What’s around me?)                               |
+    |           |                                                    |
+    |           v                                                    |
+    |  [ Behavior / Decision Making ]                                |
+    |    - Goal selection                                            |
+    |    - Mode switching (follow, avoid, stop)                      |
+    |           |                                                    |
+    |           v                                                    |
+    |  [ Planning ]                                                  |
+    |    - Global Path (A*, RRT*)                                    |
+    |    - Local Trajectory (MPC, DWA, RL)                           |
+    |                                                                |
+    +============================+===================================+
+                                 |
+                                 |  Intent / Setpoints
+                                 |  (v, ω, trajectory, waypoints)
+                                 v
+    +============================+===================================+
+    |                     ROBOTICS LAYER                             |
+    |                (Physical Execution Body ~100–1000 Hz)          |
+    |                                                                |
+    |  [ Control ]                                                   |
+    |    - PID / LQR / MPC                                           |
+    |    - Low-level stabilization                                   |
+    |           |                                                    |
+    |           v                                                    |
+    |  [ Actuators ]                                                 |
+    |    - Motors / Wheels / Joints                                  |
+    |           |                                                    |
+    |           v                                                    |
+    |  [ Physical Motion ]                                           |
+    |           |                                                    |
+    |           v                                                    |
+    |  [ Proprioceptive Sensors ]                                    |
+    |    - Encoders                                                  |
+    |    - IMU                                                       |
+    |           |                                                    |
+    |           v                                                    |
+    |  [ State Feedback ]                                            |
+    |           |                                                    |
+    |           +--------------------> back to [ Control ]           |
+    |                                                                |
+    |   ( Fast Reflex Loop: Control → Motion → Sensing → Control )   |
+    |                                                                |
+    +================================================================+
 
 ```
 
