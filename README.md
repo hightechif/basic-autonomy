@@ -21,6 +21,9 @@ This repository contains fundamental implementations of the core components requ
        |  [ Localization ] <-----> [ Mapping ]           |            |
        |                   |                             |            |
        |                   v                             |            |
+       |           [ Decision Making ]                   |            |
+       |                   |                             |            |
+       |                   v                             |            |
        |              [ Planning ]                       |            |
        |                                                 |            |
        +===================+=============================+            |
