@@ -6,9 +6,9 @@ from enum import Enum
 from abc import abstractmethod
 
 class Process(Enum):
-    NAV = ("nav", "\n--- Running Navigation (Probabilistic State Estimation) Demo ---", "01_probabilistic_state_estimation.grid_world_probability")
+    NAV = ("nav", "\n--- Running Localization (Probabilistic State Estimation) Demo ---", "01_probabilistic_state_estimation.grid_world_probability")
     FSM = ("fsm", "\n--- Running Decision Making (Finite State Machine) Demo ---", "02_finite_state_machine.vacuum_agent")
-    PLAN = ("plan", "\n--- Running Guidance (Path Planning) Demo ---", "03_graph_search_n_path_planning.astar_grid")
+    PLAN = ("plan", "\n--- Running Planning (Path Planning) Demo ---", "03_graph_search_n_path_planning.astar_grid")
     CONTROL = ("control", "\n--- Running Control (PID) Demo ---", "04_control.pid_controller")
 
     # Type hints for attributes added by __new__
@@ -41,7 +41,7 @@ def call_module(args: argparse.Namespace, process: Process) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Basic Autonomy Robotics Demos")
     parser.add_argument("--module", "-m", type=str, choices=[process.value for process in Process], required=True,
-                        help="Which module demo to run: 'nav' (Navigation), 'fsm' (Decision), 'plan' (Guidance), 'control' (Control)")
+                        help="Which module demo to run: 'nav' (Localization), 'fsm' (Decision), 'plan' (Planning), 'control' (Control)")
     
     args = parser.parse_args()
 
