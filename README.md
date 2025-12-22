@@ -1,6 +1,6 @@
 # Basic Autonomy
 
-This repository contains fundamental implementations of the core components required for mobile robot autonomy. It breaks down the cycle into four distinct projects, each mapping to a critical subsystem of robotic architecture: Localization, Decision Making, Planning, and Control.
+This repository contains fundamental implementations of the core components required for basic autonomy. It breaks down the cycle into three distinct projects, each mapping to a critical subsystem of autonomous system architecture: Localization, Decision Making, and Planning.
 
 ```text
                   +-------------------------+
@@ -47,9 +47,9 @@ This repository contains fundamental implementations of the core components requ
 
 ## System Architecture
 
-The autonomy stack is organized into two main distinct layers: **Autonomy** (The Brain) and **Robotics** (The Body).
+The autonomy stack focuses on the **Autonomy** layer (The Brain) as illustrated above.
 
-### 1. [ AUTONOMY ]
+### [ AUTONOMY ]
 Higher-level processing that answers *"What should I do?"* and *"Where should I go?"*.
 
 | Subsystem | Function | Robot Question | Algo/Implementation |
@@ -57,13 +57,6 @@ Higher-level processing that answers *"What should I do?"* and *"Where should I 
 | **Localization** | State Estimation | *"Where am I?"* | Probabilistic Filters (Kalman/Particle) |
 | **Decision Making** | Mission Executive | *"What should I do next?"* | Finite State Machine (FSM) |
 | **Planning** | Path Planning | *"How do I get there?"* | Graph Search (A*, Dijkstra) |
-
-### 2. [ ROBOTICS ]
-Lower-level control that answers *"How do I execute this physical motion?"*.
-
-| Subsystem | Function | Robot Question | Algo/Implementation |
-| :--- | :--- | :--- | :--- |
-| **Control** | Actuation | *"How do I steer?"* | PID, MPC, LQR |
 
 ---
 
@@ -79,9 +72,6 @@ Lower-level control that answers *"How do I execute this physical motion?"*.
     Once a target is decided (e.g., "Go to Charging Station"), the planner (in `graph-search-n-path-planning`) calculates the optimal route from the current estimated position (from step 1) to the target, avoiding known obstacles.
     
     *--- Autonomy boundary: Command sent to Controller ---*
-
-4.  **Act (Control) [ROBOTICS]**
-    The planner gives a reference path, but physics (friction, inertia) prevents perfect following. The **Controller** (in `control`) calculates the precise motor voltage/torque needed to minimize the error between the robot's actual position and the desired path.
 
 ---
 
@@ -107,14 +97,6 @@ Implements the trajectory generator.
 -   **Context**: The robot has a map and knows where it is (thanks to Estimation), but needs to find a valid route through the free space.
 -   **Key Concepts**: Grid Maps, Graphs, A* Algorithm, Dijkstra, Heuristics.
 
-### [ ROBOTICS ]
-
-### 4. `04_control` (Control)
-Implements the loop closure.
--   **Goal**: Execute the planned trajectory by driving the actuators.
--   **Context**: Knowing the path is not enough; we need to correct errors in real-time (e.g., drifting due to friction) to stay on that path.
--   **Key Concepts**: PID Controllers, Feedback Loops, Error Correction.
-
 ---
 
 ## How to Run
@@ -137,10 +119,4 @@ python main.py --module fsm
 Runs the A* Path Planner on a grid map.
 ```bash
 python main.py --module plan
-```
-
-### Control Demo
-Runs the PID Controller simulation.
-```bash
-python main.py --module control
 ```
