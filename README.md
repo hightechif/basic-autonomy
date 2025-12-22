@@ -114,7 +114,6 @@ Implements sensor processing and object detection.
 -   **Key Concepts**: Object Detection, Segmentation, Sensor Models.
 
 ### 2. `state_estimation` (State Estimation / SLAM)
-### 2. `state_estimation` (State Estimation / SLAM)
 Implements the localization and mapping system.
 -   **Goal**: Accurate determination of the robot's pose and environment map.
 -   **Context**: For this demo, we use a simple 2D localizer to track (x, y) coordinates in the grid.
