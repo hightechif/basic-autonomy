@@ -81,22 +81,22 @@ Higher-level processing that answers *"What should I do?"* and *"Where should I 
 
 | Subsystem | Function | Robot Question | Algo/Implementation |
 | :--- | :--- | :--- | :--- |
-| **Localization** | State Estimation | *"Where am I?"* | Probabilistic Filters (Kalman/Particle) |
-| **Decision Making** | Mission Executive | *"What should I do next?"* | Finite State Machine (FSM) |
-| **Planning** | Path Planning | *"How do I get there?"* | Graph Search (A*, Dijkstra) |
+| **State Estimation / SLAM** | Localization & Mapping | *"Where am I?"* | Probabilistic Filters (Kalman/Particle) |
+| **Behavior / Decision Making** | Mission Executive | *"What should I do next?"* | Finite State Machine (FSM) |
+| **Planning** | Path Planning | *"How do I get there?"* | Global (A*, RRT*) & Local (MPC, DWA) |
 
 ---
 
 ## The Workflow Loop
 
-1.  **Sense & Estimate (Localization)**
-    The robot reads sensor data (lidar, encoders, IMU) which is noisy. It uses probabilistic algorithms (in `probabilistic-state-estimation`) to filter this noise and determine its most likely position and orientation in the world.
+1.  **Sense & Estimate (State Estimation / SLAM)**
+    The robot processes exteroceptive data (LiDAR, Camera) to perceive the environment (Object Detection, Free Space). It then uses probabilistic algorithms (in `probabilistic-state-estimation`) to filter noise and determine its most likely position (**Localization**) and build a map of its surroundings (**Mapping**).
 
-2.  **Decide (Decision Making)**
-    Based on the internal state (e.g., battery level) and external state (completed tasks), the **Finite State Machine** (in `finite-state-machine`) decides the current high-level mode (e.g., `IDLE`, `NAVIGATING`, `CHARGING`).
+2.  **Decide (Behavior / Decision Making)**
+    Based on the internal state (e.g., battery level) and external state (completed tasks), the **Finite State Machine** (in `finite-state-machine`) selects the current goal and switches modes (e.g., `Follow`, `Avoid`, `Stop`).
 
 3.  **Plan (Planning)**
-    Once a target is decided (e.g., "Go to Charging Station"), the planner (in `graph-search-n-path-planning`) calculates the optimal route from the current estimated position (from step 1) to the target, avoiding known obstacles.
+    Once a goal is selected, the planner (in `graph-search-n-path-planning`) calculates the optimal route. This involves **Global Planning** (finding a path across the map, e.g., A*) and **Local Trajectory** generation (avoiding immediate obstacles, e.g., DWA/MPC).
     
     *--- Autonomy boundary: Command sent to Controller ---*
 
@@ -106,23 +106,23 @@ Higher-level processing that answers *"What should I do?"* and *"Where should I 
 
 ### [ AUTONOMY ]
 
-### 1. `01_probabilistic_state_estimation` (Localization)
-Implements the localization system.
--   **Goal**: Accurate determination of the robot's pose (position + orientation).
--   **Context**: Sensors are imperfect. We can't just trust raw data. We must fuse sensor readings with a motion model to estimate the truth.
+### 1. `01_probabilistic_state_estimation` (State Estimation / SLAM)
+Implements the localization and mapping system.
+-   **Goal**: Accurate determination of the robot's pose and environment map.
+-   **Context**: Coupled estimation is required to localize within a map while simultaneously building it (SLAM).
 -   **Key Concepts**: Bayes Filters, Kalman Filters, Particle Filters, Sensor Fusion.
 
-### 2. `02_finite_state_machine` (Decision Making)
-Implements the high-level logic controller.
--   **Goal**: Management of robot behavior.
--   **Context**: A robot needs to switch behaviors based on triggers (e.g., if `battery < 20%`, switch to `Charge` state).
--   **Key Concepts**: States, Transitions, Events.
+### 2. `02_finite_state_machine` (Behavior / Decision Making)
+Implements the high-level decision-making brain.
+-   **Goal**: Management of robot behaviors and mode switching.
+-   **Context**: A robot needs to switch behaviors (e.g., from `Goal Seeking` to `Obstacle Avoidance`) based on perception and state.
+-   **Key Concepts**: States, Transitions, Events, Goal Selection.
 
 ### 3. `03_graph_search_n_path_planning` (Planning)
-Implements the trajectory generator.
--   **Goal**: Find the shortest/safest path from point A to point B.
--   **Context**: The robot has a map and knows where it is (thanks to Estimation), but needs to find a valid route through the free space.
--   **Key Concepts**: Grid Maps, Graphs, A* Algorithm, Dijkstra, Heuristics.
+Implements global and local trajectory generation.
+-   **Goal**: Find the shortest global path and feasible local trajectory.
+-   **Context**: The robot needs a global route (A*) and a local command (MPC/DWA) to follow that route while reacting to dynamic obstacles.
+-   **Key Concepts**: Grid Maps, A* (Global), MPC/DWA (Local), Heuristics.
 
 ---
 
