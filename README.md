@@ -135,34 +135,34 @@ Implements global and local trajectory generation.
 
 ## How to Run
 
-This project now uses a unified CLI entry point `main.py`. You can run demos for each subsystem independently:
+This project uses [uv](https://github.com/astral-sh/uv) for dependency management and execution. Ensure you have `uv` installed.
 
 ### Full Cycle Autonomy Demo (Integrated Loop)
 Runs the complete stack: Perception -> Estimation -> Behavior -> Planning.
 ```bash
-python main.py --module full_cycle
+uv run main.py --module full_cycle
 ```
 
 ### Perception Demo
 Runs the Object Detection simulation.
 ```bash
-python main.py --module perception
+uv run main.py --module perception
 ```
 
 ### State Estimation Demo
 Runs the Simple 2D Localizer simulation.
 ```bash
-python main.py --module estimation
+uv run main.py --module estimation
 ```
 
 ### Behavior Demo
 Runs the Vacuum Cleaner FSM agent.
 ```bash
-python main.py --module behavior
+uv run main.py --module behavior
 ```
 
 ### Planning Demo
 Runs the A* Path Planner on a grid map.
 ```bash
-python main.py --module planning
+uv run main.py --module planning
 ```

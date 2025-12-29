@@ -1,0 +1,14 @@
+[project]
+name = "basic-autonomy"
+version = "0.1.0"
+description = "Basic Autonomy Subsystems Implementation"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["perception", "behavior", "planning", "state_estimation", "shared"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
