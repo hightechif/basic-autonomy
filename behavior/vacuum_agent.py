@@ -2,6 +2,7 @@
 import random
 from enum import Enum, auto
 from shared.robot_state import RobotState
+from typing import Optional
 
 class BehaviorState(Enum):
     IDLE = auto()
@@ -15,7 +16,7 @@ class BehaviorAgent:
         self.charging_station = (0, 0)
         self.explore_targets = [(5, 5), (8, 2), (2, 8), (9, 9)]
 
-    def decide(self, robot_state: RobotState) -> tuple[int, int] | None:
+    def decide(self, robot_state: RobotState) -> Optional[tuple[int, int]]:
         """
         Decides the next goal based on robot state.
         Returns: (x, y) goal or None (stay/stop).

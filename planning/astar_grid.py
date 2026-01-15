@@ -1,7 +1,8 @@
 import heapq
+from typing import Optional
 
 class Node:
-    def __init__(self, position: tuple[int, int], parent: 'Node | None' = None):
+    def __init__(self, position: tuple[int, int], parent: Optional['Node'] = None):
         self.position = position
         self.parent = parent
         self.g = 0  # Cost from start
@@ -41,7 +42,7 @@ class AStarPlanner:
                 neighbors.append((nx, ny))
         return neighbors
 
-    def plan(self, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]] | None:
+    def plan(self, start: tuple[int, int], end: tuple[int, int]) -> Optional[list[tuple[int, int]]]:
         start_node = Node(start)
         end_node = Node(end)
         
@@ -60,7 +61,7 @@ class AStarPlanner:
             # Found the goal
             if current_node == end_node:
                 path = []
-                current: Node | None = current_node
+                current: Optional[Node] = current_node
                 while current is not None:
                     path.append(current.position)
                     current = current.parent
@@ -88,7 +89,7 @@ class AStarPlanner:
             
         return None
 
-def print_grid(grid: list[list[int]], path: list[tuple[int, int]] | None = None, start: tuple[int, int] | None = None, end: tuple[int, int] | None = None) -> None:
+def print_grid(grid: list[list[int]], path: Optional[list[tuple[int, int]]] = None, start: Optional[tuple[int, int]] = None, end: Optional[tuple[int, int]] = None) -> None:
     for x in range(len(grid)):
         line = ""
         for y in range(len(grid[0])):
